@@ -86,6 +86,12 @@ token.verify(client_token)
 # Lots of metadata
 client_token = token.create('network', 'node', '12345', '67890')
 token.verify(client_token)
+
+# Use blake2s for hashes and signatures
+from hashlib import blake2s
+token = AuthToken(secret, hashfunc=blake2s)
+blake2s_token = token.create()
+token.verify(blake2s_token)
 ```
 
 If a token fails to validate it raise the relevent exception:
@@ -101,9 +107,16 @@ token_with_different_secret.verify(plain_token)
 # ... a child of handshake.errors.InvalidTokenError exception is raised
 ```
 
+## Limitations
+
+The secret must be at least 16 bytes or characters and no more than 1024 bytes
+or characters. The total generated token length cannot be longer than 2048
+characters.
+
+
 ## Full API synopsis
 
-### `handshake.AuthToken(secret=str_or_bool, hashfunc=function)` -> `None`
+### `handshake.AuthToken(secret=str_or_bool, hashfunc=function)`
 
 Initiates an AuthToken object using the specified secret. The secret is
 required. It must be either a string or a bytes and must be between 32 and 1024
@@ -113,11 +126,11 @@ cryptographically safe random source, such as `os.urandom`.
 `hashfunc` defaults to `hashlib.sha256` but you can replace it with another
 hash function if you need to.
 
-### `handshake.AuthToken.create(*arbitrary str)` -> `str`
+### `handshake.AuthToken.create(*arbitrary str)`
 
 Creates an authentication token.
 
-### `handshake.AuthToken.verify(token=str, time_range=int)` -> `bool or dict`
+### `handshake.AuthToken.verify(token=str, time_range=int)`
 
 Verifies an authentication token created with `handshake.AuthToken.create()`.
 

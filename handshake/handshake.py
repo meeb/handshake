@@ -18,8 +18,8 @@ class AuthToken:
             raise errors.ConfigError(f'secret must be a str or '
                               f'bytes, got: {type(secret)}')
         secret_len = len(secret)
-        if (secret_len <= self.MIN_SECRET_LEN or
-            secret_len >= self.MAX_SECRET_LEN):
+        if (secret_len < self.MIN_SECRET_LEN or
+            secret_len > self.MAX_SECRET_LEN):
             raise errors.ConfigError(f'secret must be between '
                                      f'{self.MIN_SECRET_LEN} and '
                                      f'{self.MAX_SECRET_LEN} chars or bytes '
@@ -38,8 +38,8 @@ class AuthToken:
         if not isinstance(random_len, int):
             raise errors.ConfigError(f'random_len must be an int, '
                               f'got: {type(random_len)}')
-        if (random_len <= self.MIN_SECRET_LEN or
-            random_len >= self.MAX_SECRET_LEN):
+        if (random_len < self.MIN_SECRET_LEN or
+            random_len > self.MAX_SECRET_LEN):
             raise errors.ConfigError(f'random_len must be between '
                                      f'{self.MIN_SECRET_LEN} and '
                                      f'{self.MAX_SECRET_LEN}, '
