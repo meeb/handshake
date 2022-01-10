@@ -98,11 +98,11 @@ If a token fails to validate it raise the relevent exception:
 
 ```python
 # Create a token with one secret
-token = AuthToken('a secret')
+token = AuthToken('a fixed secret string')
 plain_token = token.create()
 
 # Attempt to verify it with a different token, this is invalid
-token_with_different_secret = AuthToken('not the same secret')
+token_with_different_secret = AuthToken('not the same secret string')
 token_with_different_secret.verify(plain_token)
 # ... a child of handshake.errors.InvalidTokenError exception is raised
 ```
@@ -153,7 +153,26 @@ If valid would return a tuple of:
 
 If the token is invalid for any reason a `handshake.errors.InvalidTokenError`
 exception is raised (or a child exception of
-`handshake.errors.InvalidTokenError`).
+`handshake.errors.InvalidTokenError`). You can handle different errors by
+catching them specifically and the exception names describe the event:
+
+```python
+import os
+from handshake import AuthToken, errors
+
+secret = os.urandom(128)
+token = AuthToken(secret)
+test_token = token.create()
+
+try:
+    token.verify(test_token)
+except errors.TokenExpiredError as e:
+    print(e)
+except errors.TokenSignatureError as e:
+    print(e)
+except errors.InvalidTokenError as e:
+    print(e)
+```
 
 
 # Tests
