@@ -1,5 +1,6 @@
 import os
 import string
+from uuid import uuid4
 import unittest
 from time import sleep
 from hashlib import sha256, sha512
@@ -17,6 +18,7 @@ class HandshakeTestCase(unittest.TestCase):
         self.assertFalse(handshake_utils.is_ascii_str(0))
         self.assertFalse(handshake_utils.is_ascii_str({}))
         self.assertFalse(handshake_utils.is_ascii_str(object()))
+        self.assertFalse(handshake_utils.is_ascii_str(uuid4()))
         # Invalid example chars
         self.assertFalse(handshake_utils.is_ascii_str(' '))
         self.assertFalse(handshake_utils.is_ascii_str('!'))
@@ -115,6 +117,12 @@ class HandshakeTestCase(unittest.TestCase):
         int(token_parts[2])                         # timestamp
         self.assertEqual(len(token_parts[3]), 128)  # random
         self.assertEqual(len(token_parts[4]), 128)  # signature
+        # Casting metadata to str
+        test_uuid = uuid4()
+        test_token = auth_tokens.create('test', test_uuid)
+        token_parts = test_token.split(':')
+        self.assertEqual(token_parts[0], 'test')
+        self.assertEqual(token_parts[1], str(test_uuid))
 
     def test_verify_token(self):
         random_secret = os.urandom(256)

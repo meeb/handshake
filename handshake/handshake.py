@@ -49,6 +49,8 @@ class AuthToken:
     def create(self, *metadata):
         params = []
         for i, param in enumerate(metadata):
+            if not isinstance(param, str):
+                param = str(param)
             if not utils.is_ascii_str(param):
                 raise errors.InvalidValueError(f'metadata[{i}] contains '
                                                f'invalid characters, only '
