@@ -8,8 +8,7 @@ with open('README.md', 'rt') as f:
     long_description = f.read()
 
 
-with open('requirements.txt', 'rt') as f:
-    requirements = tuple(f.read().split())
+requirements = ()
 
 
 setup(
